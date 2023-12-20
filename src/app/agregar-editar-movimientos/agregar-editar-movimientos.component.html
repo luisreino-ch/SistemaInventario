@@ -1,0 +1,79 @@
+<h2 mat-dialog-title>{{operacion}} Movimiento</h2>
+
+<form [formGroup]="form" (ngSubmit)="addEditMovimiento()">
+  <mat-dialog-content>
+    <div class="row">
+      <div class="column">
+        <mat-form-field appearance="fill">
+          <mat-label >Producto</mat-label>
+          <mat-select formControlName="ProductoID" placeholder="Seleccione un producto">
+            <mat-option *ngFor="let producto of productos" [value]="producto.ProductoID">
+              {{ producto.Nombre }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+        <div class="error" *ngIf="form.get('ProductoID')?.invalid && form.get('ProductoID')?.touched">
+          Seleccionar un producto es requerido <strong>requerido</strong>
+        </div>
+
+        <mat-form-field appearance="fill">
+          <mat-label>Cantidad</mat-label>
+          <input
+            type="number"
+            formControlName="Cantidad"
+            matInput
+            placeholder="Ingrese la cantidad"
+            autocomplete="off"
+          />
+        </mat-form-field>
+        <div class="error" *ngIf="form.get('Cantidad')?.errors?.['required'] && form.get('Cantidad')?.touched">
+          La cantidad es un campo <strong>requerido</strong>
+        </div>
+        <div class="error" *ngIf="form.get('Cantidad')?.errors?.['pattern'] && form.get('Cantidad')?.touched">
+          La cantidad debe ser un <strong>número</strong>
+        </div>
+        <div class="error" *ngIf="form.get('Cantidad')?.errors?.['min']  && form.get('Cantidad')?.touched">
+          La cantidad debe ser mayor a <strong>0</strong>
+        </div>
+        <div class="error" *ngIf="form.get('Cantidad')?.errors?.['cantidadMayorQueStock']  && form.get('Cantidad')?.touched">
+          La cantidad no puede ser mayor que el <strong>stock</strong> del producto.
+        </div>
+
+
+
+
+        <mat-form-field appearance="fill">
+          <mat-label>Fecha de Movimiento</mat-label>
+          <input  formControlName="FechaMovimiento" matInput [matDatepicker]="dp" [matDatepickerFilter]="dateFilter">
+          <mat-hint>{{getDateFormatString()}}</mat-hint>
+          <mat-datepicker-toggle matIconSuffix [for]="dp"></mat-datepicker-toggle>
+          <mat-datepicker #dp></mat-datepicker>
+        </mat-form-field>
+
+        <div class="error" *ngIf="form.get('FechaMovimiento')?.invalid && form.get('FechaMovimiento')?.touched">
+          La fecha de movimiento es un campo <strong>requerido</strong>
+        </div>
+
+
+
+        <mat-form-field appearance="fill">
+          <mat-label>Tipo de Movimiento</mat-label>
+          <mat-select formControlName="TipoMovimiento">
+            <mat-option value="Entrada">Entrada</mat-option>
+            <mat-option value="Salida">Salida</mat-option>
+          </mat-select>
+
+        </mat-form-field>
+        <div class="error" *ngIf="form.get('TipoMovimiento')?.invalid && form.get('TipoMovimiento')?.touched">
+          El tipo de movimiento es un campo <strong>requerido</strong>
+        </div>
+      </div>
+    </div>
+  </mat-dialog-content>
+  <mat-dialog-actions align="end">
+    <button type="button" (click)="cancelar()" mat-button>Cancelar</button>
+    <button [disabled]="form.invalid" type="submit" mat-button cdkFocusInitial>
+      Aceptar
+    </button>
+  </mat-dialog-actions>
+</form>
